@@ -1,4 +1,4 @@
-package com.Rikth.ordersystem.order_service;
+package com.Rikth.ordersystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
