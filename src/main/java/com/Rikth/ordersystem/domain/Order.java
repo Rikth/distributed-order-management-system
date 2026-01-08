@@ -1,9 +1,12 @@
 package com.Rikth.ordersystem.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -19,46 +22,15 @@ public class Order {
     private String customerId;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+    @JsonProperty("totalAmount")
     private Double totalAmt;
     private LocalDateTime createdAt;
 
-    public Long getId() {
-        return id;
-    }
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderItem> items = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public Double getTotalAmt() {
-        return totalAmt;
-    }
-
-    public void setTotalAmt(Double totalAmt) {
-        this.totalAmt = totalAmt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }
