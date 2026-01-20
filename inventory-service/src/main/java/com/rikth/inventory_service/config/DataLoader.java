@@ -2,7 +2,9 @@ package com.rikth.inventory_service.config;
 
 import com.rikth.inventory_service.domain.Inventory;
 import com.rikth.inventory_service.repository.InventoryRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DataLoader {
 
     public DataLoader(InventoryRepository repo){

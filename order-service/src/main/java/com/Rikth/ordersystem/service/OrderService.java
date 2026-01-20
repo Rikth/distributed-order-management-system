@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +18,26 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-
+    private final InventoryClient inventoryClient;
 
     public Order createOrder(CreateOrderRequest createOrderRequest){
-        Order order = new Order();
-        order.setCustomerId(createOrderRequest.getCustomerId());
-        order.setStatus(OrderStatus.CREATED);
-        order.setCreatedAt(LocalDateTime.now());
+        Order order = Order.builder()
+                .customerId(createOrderRequest.getCustomerId())
+                .createdAt(LocalDateTime.now())
+                .status(OrderStatus.PENDING)
+                .items(new ArrayList<>())
+                .build();
 
         double total = 0;
 
         for (OrderItemRequest orderItemRequest : createOrderRequest.getItems()){
+            try {
+                inventoryClient.reserve(orderItemRequest.getProductId(), orderItemRequest.getQuantity());
+            } catch (Exception e){
+                order.setStatus(OrderStatus.CANCELLED);
+                throw new RuntimeException("Failed to reserve inventory for product: " + orderItemRequest.getProductId());
+            }
+
             OrderItem item = OrderItem.builder().
                     productId(orderItemRequest.getProductId()).
                     quantity(orderItemRequest.getQuantity()).
@@ -40,6 +50,7 @@ public class OrderService {
         }
 
         order.setTotalAmt(total);
+        order.setStatus(OrderStatus.CONFIRMED);
         return orderRepository.save(order);
     }
 }
