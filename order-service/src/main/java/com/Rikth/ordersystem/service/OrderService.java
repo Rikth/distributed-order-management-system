@@ -6,6 +6,7 @@ import com.Rikth.ordersystem.domain.OrderStatus;
 import com.Rikth.ordersystem.dto.CreateOrderRequest;
 import com.Rikth.ordersystem.dto.OrderItemRequest;
 import com.Rikth.ordersystem.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class OrderService {
 
